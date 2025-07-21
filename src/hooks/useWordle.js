@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from 'react'
 
 const useWordle = (solution) => {
   const [turn, setTurn] = useState(0) 
@@ -7,26 +7,36 @@ const useWordle = (solution) => {
   const [history, setHistory] = useState([]) // each guess is a string
   const [isCorrect, setIsCorrect] = useState(false)
 
-    //formats a guess into the array of letter objects
-    //e.g: [{key: 'a', color:  'yellow'}]
-    const formatGuess = () => {
+  // format a guess into an array of letter objects 
+  // e.g. [{key: 'a', color: 'yellow'}]
+  const formatGuess = () => {
+    
+  }
 
+  // add a new guess to the guesses state
+  // update the isCorrect state if the guess is correct
+  // add one to the turn state
+  const addNewGuess = () => {
+
+  }
+
+  // handle keyup event & track current guess
+  // if user presses enter, add the new guess
+  const handleKeyup = ({ key }) => {
+    console.log('key pressed - ', key)
+
+    if (key === 'Backspace') {
+      setCurrentGuess(prev => prev.slice(0, -1))
+      return
     }
-
-    //adds new guess to the gusses state
-    //updates the isCorrect state if the guess is correct
-    //add one to the turn state
-    const addNewGuess = () => {
-
+    if (/^[A-Za-z]$/.test(key)) {
+      if (currentGuess.length < 5) {
+        setCurrentGuess(prev => prev + key)
+      }
     }
+  }
 
-    //handles keyup event & track current guess
-    //if user presses enter, adds the guess
-    const handlekeyup = () => {
-
-    }
-
-    return {turn, currentGuess, guesses, isCorrect, handlekeyup};
+  return {turn, currentGuess, guesses, isCorrect, handleKeyup}
 }
 
-export default useWordle;
+export default useWordle
