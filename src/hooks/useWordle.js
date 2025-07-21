@@ -3,21 +3,57 @@ import { useState } from 'react'
 const useWordle = (solution) => {
   const [turn, setTurn] = useState(0) 
   const [currentGuess, setCurrentGuess] = useState('')
-  const [guesses, setGuesses] = useState([]) // each guess is an array
+  const [guesses, setGuesses] = useState(Array(6).fill(null)) // each guess is an array
   const [history, setHistory] = useState(['hello', 'ninja']) // each guess is a string
   const [isCorrect, setIsCorrect] = useState(false)
 
   // format a guess into an array of letter objects 
   // e.g. [{key: 'a', color: 'yellow'}]
   const formatGuess = () => {
-    console.log('formatting the guess - ', currentGuess)
+    //variable called solutionArray
+    let solutionArray = [...solution]
+    let formattedGuess = [...currentGuess].map((l) => {
+      return { key: l, color: 'grey' }
+    })
+
+    //finds any green letters
+    formattedGuess.forEach((l, i) => {
+      if (solutionArray[i] === l.key) {
+        formattedGuess[i].color = 'green'
+        solutionArray[i] = null //removes letter from solutionArray to prevent double counting
+      }
+    })
+    
+    //finds any yellow letters
+    formattedGuess.forEach((l, i) => {
+      if (solutionArray.includes(l.key) && formattedGuess[i].color !== 'green') {
+        formattedGuess[i].color = 'yellow'
+        solutionArray[solutionArray.indexOf(l.key)] = null
+      }
+    })
+
+    return formattedGuess
   }
 
   // add a new guess to the guesses state
   // update the isCorrect state if the guess is correct
   // add one to the turn state
-  const addNewGuess = () => {
-
+  const addNewGuess = (formattedGuess) => {
+    if(currentGuess === solution) {
+      setIsCorrect(true)
+    }
+    setGuesses((prev) => {
+      let newGuesses = [...prev]
+      newGuesses[turn] = formattedGuess
+      return newGuesses
+    })
+    setHistory((prevHistory) =>{
+      return [...prevHistory, currentGuess]
+    })
+    setTurn((prevTurn) => {
+      return prevTurn + 1
+    })
+    setCurrentGuess('')
   }
 
   // handle keyup event & track current guess
@@ -39,7 +75,8 @@ const useWordle = (solution) => {
         console.log('word must be 5 chars.')
         return
       }
-      formatGuess()
+      const formatted = formatGuess()
+      addNewGuess(formatted)
     }
     if (key === 'Backspace') {
       setCurrentGuess(prev => prev.slice(0, -1))
