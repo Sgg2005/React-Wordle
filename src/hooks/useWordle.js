@@ -3,30 +3,29 @@ import { useState } from 'react'
 const useWordle = (solution) => {
   const [turn, setTurn] = useState(0) 
   const [currentGuess, setCurrentGuess] = useState('')
-  const [guesses, setGuesses] = useState(Array(6).fill(null)) // each guess is an array
-  const [history, setHistory] = useState(['hello', 'ninja']) // each guess is a string
+  const [guesses, setGuesses] = useState([...Array(6)]) // each guess is an array
+  const [history, setHistory] = useState([]) // each guess is a string
   const [isCorrect, setIsCorrect] = useState(false)
 
   // format a guess into an array of letter objects 
   // e.g. [{key: 'a', color: 'yellow'}]
   const formatGuess = () => {
-    //variable called solutionArray
     let solutionArray = [...solution]
     let formattedGuess = [...currentGuess].map((l) => {
-      return { key: l, color: 'grey' }
+      return {key: l, color: 'grey'}
     })
 
-    //finds any green letters
+    // find any green letters
     formattedGuess.forEach((l, i) => {
-      if (solutionArray[i] === l.key) {
+      if (solution[i] === l.key) {
         formattedGuess[i].color = 'green'
-        solutionArray[i] = null //removes letter from solutionArray to prevent double counting
+        solutionArray[i] = null
       }
     })
     
-    //finds any yellow letters
+    // find any yellow letters
     formattedGuess.forEach((l, i) => {
-      if (solutionArray.includes(l.key) && formattedGuess[i].color !== 'green') {
+      if (solutionArray.includes(l.key) && l.color !== 'green') {
         formattedGuess[i].color = 'yellow'
         solutionArray[solutionArray.indexOf(l.key)] = null
       }
@@ -39,18 +38,18 @@ const useWordle = (solution) => {
   // update the isCorrect state if the guess is correct
   // add one to the turn state
   const addNewGuess = (formattedGuess) => {
-    if(currentGuess === solution) {
+    if (currentGuess === solution) {
       setIsCorrect(true)
     }
-    setGuesses((prev) => {
-      let newGuesses = [...prev]
+    setGuesses(prevGuesses => {
+      let newGuesses = [...prevGuesses]
       newGuesses[turn] = formattedGuess
       return newGuesses
     })
-    setHistory((prevHistory) =>{
+    setHistory(prevHistory => {
       return [...prevHistory, currentGuess]
     })
-    setTurn((prevTurn) => {
+    setTurn(prevTurn => {
       return prevTurn + 1
     })
     setCurrentGuess('')
