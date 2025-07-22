@@ -7,26 +7,32 @@ import Keypad from './Keypad'
 import Modal from './Modal'
 
 export default function Wordle({ solution }) {
-  const { currentGuess, guesses, turn, isCorrect, usedKeys, handleKeyup } = useWordle(solution) //custom hook to manage game state
-  const [showModal, setShowModal] = React.useState(false) //state to control modal visibility
-  
+  const { currentGuess, guesses, turn, isCorrect, usedKeys, handleKeyup } = useWordle(solution)
+  const [showModal, setShowModal] = React.useState(false)
+
   useEffect(() => {
     window.addEventListener('keyup', handleKeyup)
 
-    //checks if user won the game or not
-    if( isCorrect){
-      setTimeout(() => setShowModal(true), 2000) //show modal after 2 seconds if the user guessed correctly
+    if (isCorrect) {
+      setTimeout(() => setShowModal(true), 2000)
       window.removeEventListener('keyup', handleKeyup)
     }
-    
-    //checks if user has lost the game or not 
-    if(turn > 5 && !isCorrect) {
-      setTimeout(() => setShowModal(true), 2000) //show modal after 2 seconds if the user lost
+
+    if (turn > 5 && !isCorrect) {
+      setTimeout(() => setShowModal(true), 2000)
       window.removeEventListener('keyup', handleKeyup)
     }
 
     return () => window.removeEventListener('keyup', handleKeyup)
-  }, [handleKeyup, isCorrect])
+  }, [handleKeyup, isCorrect, turn])
+
+  function handlePlayAgain() {
+    window.location.reload()
+  }
+
+  function handleExitGame() {
+    window.close()
+  }
 
   return (
     <div>
@@ -34,7 +40,15 @@ export default function Wordle({ solution }) {
       <div>Current Guess - {currentGuess}</div>
       <Grid guesses={guesses} currentGuess={currentGuess} turn={turn} />
       <Keypad usedKeys={usedKeys} />
-      {showModal && <Modal isCorrect={isCorrect} turn={turn} solution={solution} />}
+      {showModal && (
+        <Modal
+          isCorrect={isCorrect}
+          turn={turn}
+          solution={solution}
+          onPlayAgain={handlePlayAgain}
+          onExitGame={handleExitGame}
+        />
+      )}
     </div>
   )
 }
