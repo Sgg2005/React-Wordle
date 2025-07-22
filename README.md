@@ -6,7 +6,7 @@ This project is a web application built using React, a popular JavaScript librar
 
 This app allows users to manage tasks and track their progress in a simple, intuitive interface. Users can add new tasks, update their status, and delete tasks once completed. The application provides an organized view of all tasks, making it easy to stay productive and on top of ongoing projects.
 
-## Technologies & Languages Used
+## Languages Used
 
 - React (JavaScript library)
 - JavaScript
